@@ -3,12 +3,6 @@ Before we start guys - please we offer mobile app development service @venbrinoD
 you can send us a dm 
 
 
-[send a whatapps message now](http://wa.link/eyxjqu)
-
-[our website](https://venbrinodevs.com/)
-
-
-
 
 1. Make sure to initialize Firebase - 
 2. Add dependency flutter pub add firebase_messaging
@@ -155,11 +149,6 @@ class _NotificationConfigState extends State<NotificationWrapper> {
   }
 }
 ```
-                                                            
-Thanks guys
-                                                        
-[send whatapps message now](http://wa.link/eyxjqu)
-
-[our website](https://venbrinodevs.com/)
+                                                          
 
 # Firebase-Notification-Wrapper
