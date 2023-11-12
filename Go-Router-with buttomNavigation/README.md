@@ -1,3 +1,17 @@
+
+Before we start guys - please we offer mobile app development service @venbrinoDev
+you can send us a dm 
+
+
+
+1. Make sure to initialize Firebase - 
+2. Add dependency flutter pub add firebase_messaging
+3. Configure your app for ios/macos to receive notification (https://firebase.flutter.dev/docs/messaging/apple-integration/)
+
+## Usage
+
+```dart
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -494,3 +508,8 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
     );
   }
 }
+
+```
+                                                          
+
+# Firebase-Notification-Wrapper
