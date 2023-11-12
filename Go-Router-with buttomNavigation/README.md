@@ -33,29 +33,24 @@ class App extends StatelessWidget {
 }
 
 class CustomNavigationHelper {
-  static final CustomNavigationHelper _instance =
-      CustomNavigationHelper._internal();
+
+
+  static final CustomNavigationHelper _instance = CustomNavigationHelper._internal();
 
   static CustomNavigationHelper get instance => _instance;
 
   static late final GoRouter router;
 
-  static final GlobalKey<NavigatorState> parentNavigatorKey =
-      GlobalKey<NavigatorState>();
-  static final GlobalKey<NavigatorState> homeTabNavigatorKey =
-      GlobalKey<NavigatorState>();
-  static final GlobalKey<NavigatorState> searchTabNavigatorKey =
-      GlobalKey<NavigatorState>();
-  static final GlobalKey<NavigatorState> settingsTabNavigatorKey =
-      GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> parentNavigatorKey = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> homeTabNavigatorKey = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> searchTabNavigatorKey = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> settingsTabNavigatorKey = GlobalKey<NavigatorState>();
 
-  BuildContext get context =>
-      router.routerDelegate.navigatorKey.currentContext!;
+  BuildContext get context => router.routerDelegate.navigatorKey.currentContext!;
 
   GoRouterDelegate get routerDelegate => router.routerDelegate;
 
-  GoRouteInformationParser get routeInformationParser =>
-      router.routeInformationParser;
+  GoRouteInformationParser get routeInformationParser => router.routeInformationParser;
 
   static const String signUpPath = '/signUp';
   static const String signInPath = '/signIn';
@@ -69,6 +64,8 @@ class CustomNavigationHelper {
   factory CustomNavigationHelper() {
     return _instance;
   }
+
+
 
   CustomNavigationHelper._internal() {
     final routes = [
@@ -189,6 +186,16 @@ class CustomNavigationHelper {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
