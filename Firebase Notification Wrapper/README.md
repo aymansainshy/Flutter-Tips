@@ -149,6 +149,193 @@ class _NotificationConfigState extends State<NotificationWrapper> {
   }
 }
 ```
+
+
+UNIT TEST FLUTTER BLOC AND REPOSITORY
+
+```dart
+class ApiRepository {
+  final ApiService apiService;
+
+  ApiRepository(this.apiService);
+
+  Future<List<Data>> fetchData() async {
+    final response = await apiService.getData();
+    return response.map((item) => Data.fromJson(item)).toList();
+  }
+}
+
+
+
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+import 'package:mockito/annotations.dart';
+
+// Import the actual files
+import 'api_repository.dart';
+import 'api_service.dart';
+import 'data.dart';
+
+// Generate a MockApiService
+@GenerateMocks([ApiService])
+void main() {
+  late ApiRepository apiRepository;
+  late MockApiService mockApiService;
+
+  setUp(() {
+    mockApiService = MockApiService();
+    apiRepository = ApiRepository(mockApiService);
+  });
+
+  test('fetchData returns a list of Data', () async {
+    // Arrange
+    when(mockApiService.getData()).thenAnswer(
+      (_) async => [
+        {'id': 1, 'name': 'Data 1'},
+        {'id': 2, 'name': 'Data 2'},
+      ],
+    );
+
+    // Act
+    final result = await apiRepository.fetchData();
+
+    // Assert
+    expect(result, isA<List<Data>>());
+    expect(result.length, 2);
+    expect(result[0].name, 'Data 1');
+  });
+}
+
+
+
+
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'api_repository.dart';
+import 'data.dart';
+
+// Bloc Events
+abstract class DataEvent extends Equatable {
+  const DataEvent();
+}
+
+class FetchData extends DataEvent {
+  @override
+  List<Object> get props => [];
+}
+
+// Bloc States
+abstract class DataState extends Equatable {
+  const DataState();
+}
+
+class DataInitial extends DataState {
+  @override
+  List<Object> get props => [];
+}
+
+class DataLoadInProgress extends DataState {
+  @override
+  List<Object> get props => [];
+}
+
+class DataLoadSuccess extends DataState {
+  final List<Data> data;
+
+  const DataLoadSuccess(this.data);
+
+  @override
+  List<Object> get props => [data];
+}
+
+class DataLoadFailure extends DataState {
+  @override
+  List<Object> get props => [];
+}
+
+// Bloc Implementation
+class DataBloc extends Bloc<DataEvent, DataState> {
+  final ApiRepository apiRepository;
+
+  DataBloc(this.apiRepository) : super(DataInitial());
+
+  @override
+  Stream<DataState> mapEventToState(DataEvent event) async* {
+    if (event is FetchData) {
+      yield DataLoadInProgress();
+      try {
+        final data = await apiRepository.fetchData();
+        yield DataLoadSuccess(data);
+      } catch (_) {
+        yield DataLoadFailure();
+      }
+    }
+  }
+}
+
+
+import 'package:bloc_test/bloc_test.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+import 'package:mockito/annotations.dart';
+
+// Import the actual files
+import 'data_bloc.dart';
+import 'api_repository.dart';
+import 'data.dart';
+
+// Generate a MockApiRepository
+@GenerateMocks([ApiRepository])
+void main() {
+  late DataBloc dataBloc;
+  late MockApiRepository mockApiRepository;
+
+  setUp(() {
+    mockApiRepository = MockApiRepository();
+    dataBloc = DataBloc(mockApiRepository);
+  });
+
+  tearDown(() {
+    dataBloc.close();
+  });
+
+  group('DataBloc', () {
+    blocTest<DataBloc, DataState>(
+      'emits [DataLoadInProgress, DataLoadSuccess] when FetchData is added and fetchData succeeds',
+      build: () {
+        when(mockApiRepository.fetchData()).thenAnswer(
+          (_) async => [
+            Data(id: 1, name: 'Data 1'),
+            Data(id: 2, name: 'Data 2'),
+          ],
+        );
+        return dataBloc;
+      },
+      act: (bloc) => bloc.add(FetchData()),
+      expect: () => [
+        DataLoadInProgress(),
+        DataLoadSuccess([
+          Data(id: 1, name: 'Data 1'),
+          Data(id: 2, name: 'Data 2'),
+        ]),
+      ],
+    );
+
+    blocTest<DataBloc, DataState>(
+      'emits [DataLoadInProgress, DataLoadFailure] when FetchData is added and fetchData fails',
+      build: () {
+        when(mockApiRepository.fetchData()).thenThrow(Exception('Error'));
+        return dataBloc;
+      },
+      act: (bloc) => bloc.add(FetchData()),
+      expect: () => [
+        DataLoadInProgress(),
+        DataLoadFailure(),
+      ],
+    );
+  });
+}
+```
                                                           
 
 # Firebase-Notification-Wrapper
